@@ -1,5 +1,5 @@
 class Api::V1::WelcomeController < ApplicationController
   def index
-    render json: {response: 'とりあえず接続'}
+    render json: {response: "@#{params['user_name']} #{params['text']}"}
   end
 end
