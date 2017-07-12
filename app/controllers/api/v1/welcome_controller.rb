@@ -16,22 +16,27 @@ class Api::V1::WelcomeController < ApplicationController
                                     :country => 'jp',
                                     :limit => 3
       )
-      res.items.each do |item|
-        # puts item.get_element('ItemAttributes')
-        text = text + "Title:#{item.get('ItemAttributes/Title')}\nURL:#{create_url(item.get('ASIN'))}\n\n"
+      if res.items.size > 0
+        res.items.each do |item|
+          # puts item.get_element('ItemAttributes')
+          text = text + "Title:#{item.get('ItemAttributes/Title')}\nURL:#{create_url(item.get('ASIN'))}\n\n"
 
 
-        puts "Title:#{item.get('ItemAttributes/Title')}"
-        puts "URL:#{create_url(item.get('ASIN'))}"
-        # puts item.get_hash('SmallImage')
+          puts "Title:#{item.get('ItemAttributes/Title')}"
+          puts "URL:#{create_url(item.get('ASIN'))}"
+          # puts item.get_hash('SmallImage')
+        end
+        render json: { response: "<@#{params['user_id']}> \n\n```#{text}```" }
+        return
+      else
+        text = 'みつからないわね...'
       end
     rescue Amazon::RequestError => ex
-      # render json: { response: "<@#{params['user_id']}> 今、混雑中だわ...." }
       puts ex.message
-       text = '今、混雑中だわ....'
+      text = '今、混雑中だわ....'
     end
+    render json: { response: "<@#{params['user_id']}> #{text}" }
 
-    render json: { response: "<@#{params['user_id']}> \n\n```#{text}```" }
   end
 
   private
