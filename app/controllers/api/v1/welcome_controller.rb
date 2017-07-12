@@ -8,6 +8,7 @@ class Api::V1::WelcomeController < ApplicationController
       :AWS_secret_key => ENV['AWS_secret_key']
     }
 
+    text = ''
     begin
       res = Amazon::Ecs.item_search(params['text'],
                                     :search_index => 'All',
@@ -15,7 +16,6 @@ class Api::V1::WelcomeController < ApplicationController
                                     :country => 'jp',
                                     :limit => 3
       )
-      text = ''
       res.items.each do |item|
         # puts item.get_element('ItemAttributes')
         text = text + "Title:#{item.get('ItemAttributes/Title')}\nURL:#{create_url(item.get('ASIN'))}\n\n"
@@ -26,11 +26,12 @@ class Api::V1::WelcomeController < ApplicationController
         # puts item.get_hash('SmallImage')
       end
     rescue Amazon::RequestError => ex
-      render json: { response: "<@#{params['user_id']}> 今、混雑中だわ...." }
+      # render json: { response: "<@#{params['user_id']}> 今、混雑中だわ...." }
+      puts ex.message
+       text = '今、混雑中だわ....'
     end
 
-
-    render json: { response: "<@#{params['user_id']}> \n ```#{text}```" }
+    render json: { response: "<@#{params['user_id']}> \n\n```#{text}```" }
   end
 
   private
