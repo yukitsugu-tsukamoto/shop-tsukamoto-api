@@ -94,8 +94,6 @@ GEM
     mini_portile2 (2.2.0)
     minitest (5.10.2)
     mysql2 (0.4.7)
-    natto (1.1.1)
-      ffi (>= 1.9.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
@@ -175,7 +173,6 @@ DEPENDENCIES
   figaro
   listen (>= 3.0.5, < 3.2)
   mysql2 (>= 0.3.18, < 0.5)
-  natto
   puma (~> 3.7)
   rack-cors
   rails (~> 5.1.2)
