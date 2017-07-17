@@ -1,47 +1,12 @@
 class Api::V1::WelcomeController < ApplicationController
   def index
-
-    # Amazon::Ecs.debug = true
-    Amazon::Ecs.options = {
-      :associate_tag => ENV['associate_tag'],
-      :AWS_access_key_id => ENV['AWS_access_key_id'],
-      :AWS_secret_key => ENV['AWS_secret_key']
-    }
-
     text = ''
-    begin
-      res = Amazon::Ecs.item_search(params['text'],
-                                    :search_index => 'All',
-                                    :response_group => 'Small',
-                                    :country => 'jp',
-                                    :limit => 3
-      )
-      if res.items.size > 0
-        res.items.each do |item|
-          # puts item.get_element('ItemAttributes')
-          text = text + "Title:#{item.get('ItemAttributes/Title')}\nURL:#{create_url(item.get('ASIN'))}\n\n"
-
-
-          puts "Title:#{item.get('ItemAttributes/Title')}"
-          puts "URL:#{create_url(item.get('ASIN'))}"
-          # puts item.get_hash('SmallImage')
-        end
-        render json: { response: "<@#{params['user_id']}> \n\n```#{text}```" }
-        return
-      else
-        text = 'みつからないわね...'
-      end
-    rescue Amazon::RequestError => ex
-      puts ex.message
-      text = '今、混雑中だわ....'
+    search_word_tmp = params['text'].match(/(ほしい|がほしい|欲しい|が欲しい)$/)
+    if search_word_tmp.present?
+      text = AmazonSearch.search_all(params['text'].delete(search_word_tmp.to_s))
+      render json: {response: "<@#{params['user_id']}> #{text}"}
     end
-    render json: { response: "<@#{params['user_id']}> #{text}" }
-
+    return
   end
 
-  private
-  #http://www.amazon.co.jp/dp/ASINコード/?tag=アフィリエイトタグ
-  def create_url(asin_code)
-    "http://www.amazon.co.jp/dp/#{asin_code}?tag=#{ENV['associate_tag']}"
-  end
 end
