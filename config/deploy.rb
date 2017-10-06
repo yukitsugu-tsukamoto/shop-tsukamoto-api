@@ -2,7 +2,8 @@
 lock '3.6.1'
 
 set :application, 'shop_tsukamoto'
-set :repo_url, 'git@github.com:yukitsugu-tsukamoto/shop-tsukamoto-api.git'
+# set :repo_url, 'git@github.com:yukitsugu-tsukamoto/shop-tsukamoto-api.git'
+set :repo_url, 'https://github.com/yukitsugu-tsukamoto/shop-tsukamoto-api.git'
 
 # Default branch is :master
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
